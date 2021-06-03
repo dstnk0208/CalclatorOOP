@@ -1,0 +1,42 @@
+#main {
+    width: 100%;
+}
+input {
+    height: 50px;
+    width: auto;
+    margin-bottom: 2%;
+    font-size:  large;
+    text-align: right;
+}
+
+#l1, #l2, #l3, #l4 {
+    width: 25rem;
+}
+
+button {
+    height: 3rem;
+    width:  3rem;
+    margin-bottom: 0.25rem;
+    font-size: large;
+    font-weight: bold; /* 文字の太さ */
+    text-align: center;
+    color: #000000; /* 文字の色 */
+    background-color: #58b3e7cc;
+    border-width: 3px;
+    border-radius: 7px; 
+    cursor: pointer; /* カーソルの形状 */
+}
+
+#plus {
+    height: 6rem;
+    width:  3rem;
+    margin-bottom: 0.25rem;
+    font-size: large;
+    font-weight: bold; /* 文字の太さ */
+    text-align: center;
+    color: #000000; /* 文字の色 */
+    background-color: #58b3e7cc;
+    border-width: 3px;
+    border-radius: 7px; 
+    cursor: pointer; /* カーソルの形状 */
+}
