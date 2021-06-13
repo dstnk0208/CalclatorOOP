@@ -1,63 +1,33 @@
-// ZeroDevideException
 class Stack {
     constructor() {
-        this.__a = [];
+        this._a = [];
     }
     push(a) {
-        this.__a.push(a);
+        // NaN or undefinedで例外
+        try {
+            if ((!(a === a)) || (a === void 0)) {
+                throw new InvalidInputException();
+            }
+            this._a.push(a);
+        } catch (e) {
+            if (e instanceof InvalidInputException) {
+                console.log(e);
+            } else {
+                console.log('other error');
+            }
+        }
     }
     pop() {
-        return this.__a.pop();
+        return this._a.pop();
     }
     size() {
-        return this.__a.length;
-    }
-    all() {
-        return this.__a;
+        return this._a.length;
     }
     last() {
-        return this.__a[this.__a.length - 1];
+        return this._a[this._a.length - 1];
     }
-}
-
-// canPush = {"number": `bool`, "operator": `bool`}
-class canPush {
-    canPushNum() {
-        let result = Boolean;
-        let last = stack.last();
-        if (last == 0) {
-            document.getElementById('input').value = '';
-            document.getElementById('input').value += n;
-        } else if (last === undefined) {
-            if (!isNaN(n)) {
-                document.getElementById('input').value += n;
-                stack.push(parseIng(document.getElementById('input').value));
-            }
-            console.log('isNaN(last)', stack.all());
-        } else if (typeof(last) == 'number') {
-            document.getElementById('input').value += n;
-            stack.pop();
-            stack.push(parseIng(document.getElementById('input').value));
-            console.log('number', stack.all());
-        } else if (typeof(last) == 'string') {
-            if (last == '=') {
-                stack = new Stack;
-            }
-            document.getElementById('input').value = '';
-            document.getElementById('input').value += n;
-            stack.push(parseIng(document.getElementById('input').value));
-            console.log('string', stack.all());
-        }
-    
-    }
-    canPushOpe() {
-        let result = Boolean;
-    }
-    canPush() {
-        let result = {};
-        // push result of canPushNum function to this.result
-        // push result of canPushOpe function to this.result
-        return result
+    all() {
+        return this._a.join();
     }
 }
 
@@ -67,89 +37,107 @@ class Calc {
         let o = stack.pop();
         let v1 = stack.pop();
         if (o == '+') {
-            this.__add(v1, v2);
+            this._add(v1, v2);
         } else if(o == '-') {
-            this.__sub(v1, v2);
+            this._sub(v1, v2);
         } else if(o == '*') {
-            this.__mul(v1, v2);
+            this._mul(v1, v2);
         } else if(o == '/') {
-            this.__div(v1, v2);
+            this._div(v1, v2);
         }
     }
-    __add(v1, v2) {
+    _add(v1, v2) {
         stack.push(v1 + v2);
     }
-    __sub(v1, v2) {
+    _sub(v1, v2) {
         stack.push(v1 - v2);
     }
-    __mul(v1, v2) {
+    _mul(v1, v2) {
         stack.push(v1 * v2);
     }
-    __div(v1, v2) {
-        if (v2 == 0) {
-            throw new ZeroDevideException("Devided zero");
+    _div(v1, v2) {
+        try {
+            if (v2 == 0) {
+                throw new ZeroDevideException();
+            }
+            stack.push(v1 / v2);
+        } catch (e) {
+            if (e instanceof ZeroDevideException) {
+                console.log(e);
+            } else {
+                console.log('other error');
+            }
         }
-        stack.push(v1 / v2);
     }
 }
 
 class ZeroDevideException extends Error {
-    constructor(message) {
-        super(message);
-        this.name = 'ZeroDevideException';
+    constructor(...params) {
+        super(...params);
+        Object.defineProperty(this, 'name', {
+            value: this.constructor.name,
+        });
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, ZeroDevideException);
+        }
     }
 }
+
+class InvalidInputException extends Error {
+    constructor(...params) {
+        super(...params);
+        Object.defineProperty(this, 'name', {
+            configurable: true,
+            enumerable: false,
+            value: this.constructor.name,
+            writable: true,
+        });
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, InvalidInputException);
+        }
+    }
+}
+
 
 stack = new Stack;
 calc = new Calc;
 
 function onPushNum(n) {
     let last = stack.last();
-    if (last == 0) {
+    if ((last === 0) || (last === void 0)) {
         document.getElementById('input').value = '';
-        document.getElementById('input').value += n;
-    } else if (last === undefined) {
-        if (!isNaN(n)) {
-            document.getElementById('input').value += n;
-            stack.push(parseInt(document.getElementById('input').value));
-        }
-        console.log('isNaN(last)', stack.all());
-    } else if (typeof(last) == 'number') {
-        document.getElementById('input').value += n;
-        stack.pop();
-        stack.push(parseInt(document.getElementById('input').value));
-        console.log('number', stack.all());
-    } else if (typeof(last) == 'string') {
-        if (last == '=') {
-            stack = new Stack;
-        }
-        document.getElementById('input').value = '';
-        document.getElementById('input').value += n;
-        stack.push(parseInt(document.getElementById('input').value));
-        console.log('string', stack.all());
     }
+    if (typeof(last) === 'number') {
+        stack.pop();
+    } else if (typeof(last) === 'string') {
+        document.getElementById('input').value = '';
+    }
+    document.getElementById('input').value += n;
+    stack.push(parseInt(document.getElementById('input').value));
 }
 
 function onPushOperator(o) {
-    let s = stack.all();
     let last = stack.last();
-    if (stack.size() == 0) {
+    if (stack.size() === 0) {
         return
     } else if (typeof(last) == 'string') {
         stack.pop();
-        stack.push(o);
-    } else if (s.length == 1 && typeof(last) == 'number') {
-        stack.push(o);
     } else if (stack.size() == 3) {
         calc.calc();
         let result = stack.last();
         document.getElementById('input').value = result;
-        stack.push(o);
     }
-    console.log('onPushOperator', stack.all());
+    stack.push(o);
+}
+
+function onPushEqual() {
+    calc.calc()
+    let result = stack.last();
+    document.getElementById('input').value = result;
+    stack = new Stack;
 }
 
 function onPushClear() {
-    stack = new Stack;
     document.getElementById('input').value = '';
+    stack = new Stack;
 }
